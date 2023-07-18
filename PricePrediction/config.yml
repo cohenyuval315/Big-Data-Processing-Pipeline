@@ -1,0 +1,8 @@
+cassandra:
+  hosts: [127.0.0.1]
+  port: 9042
+  keyspaces: ["btcusdt"]
+  tables: [one_second, one_minute]
+
+host: 127.0.0.1
+port: 9001

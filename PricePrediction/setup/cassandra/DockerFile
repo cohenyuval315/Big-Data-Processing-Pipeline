@@ -1,0 +1,7 @@
+FROM cassandra:lastest
+WORKDIR /the/workdir/path
+ENV CASSANDRA_LISTEN_ADDRESS=127.0.0.1
+
+EXPOSE 9042
+COPY "./cql_scripts/"
+CMD ['cqlsh']

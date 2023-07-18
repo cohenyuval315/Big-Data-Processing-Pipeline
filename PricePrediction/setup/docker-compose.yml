@@ -1,0 +1,15 @@
+services:
+  web:
+    build:
+    ports:
+      - "8000:5000"
+  cassandra:
+    image: "cassandra:lastest"
+    ports: "9042:9042"
+    volumes:
+    environment:
+      - CASSANDRA_LISTEN_ADDRESS=127.0.0.1
+
+  kafka:
+  
+networks:
