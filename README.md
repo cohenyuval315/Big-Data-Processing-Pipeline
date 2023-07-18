@@ -20,6 +20,8 @@ started: 15.7.2023
 - spark to cassandra for processed data
 - testing diffrent models with training , and predictions
 - react for charts visualisation with rest api
+- Astra DB
+- databricks distributed deep learning on spark
 - dockerize kafka
 - docker-compose
 - performance configurations optimiziations
