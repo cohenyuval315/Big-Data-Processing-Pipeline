@@ -56,7 +56,7 @@ def main():
         symbol = symbol.lower()
         topic = f"{symbol}_{interval}"
         ready_msg = normalize_kline_json(normalize_kline(data))
-        producer.produce(json.dumps(ready_msg),key=stream_name,topic=topic,verbose=True)
+        producer.produce(json.dumps(ready_msg),key=stream_name,topic=topic)
     try:
         twm.start()
         twm.start_multiplex_socket(callback=handle_socket_message, streams=streams)

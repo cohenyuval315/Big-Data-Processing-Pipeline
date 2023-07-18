@@ -11,11 +11,9 @@ class CassandraSink(CassandraService):
         .save()
 
     def write_stream(self,df,table,keyspace="btcusdt"):
-        
         df.writeStream \
             .trigger(processingTime="5 seconds") \
             .foreachBatch(lambda df, epoch_id: self.write_to_cassandra(df, epoch_id, keyspace, table)) \
             .outputMode("update") \
-            .start() \
-            .awaitTermination()
-        df.show()
+            .start()
+

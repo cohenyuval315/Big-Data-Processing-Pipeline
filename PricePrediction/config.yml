@@ -1,8 +1,18 @@
+appName: "app"
 cassandra:
   hosts: [127.0.0.1]
   port: 9042
   keyspaces: ["btcusdt"]
   tables: [one_second, one_minute]
 
-host: 127.0.0.1
-port: 9001
+sparkConfig:
+  spark.local.dir: 'D:\spark\temp'
+  spark.sql.adaptive.enabled: "false"
+  spark.sql.streaming.forceDeleteTempCheckpointLocation: "false"
+  spark.sql.shuffle.partitions: "3"
+  spark.cassandra.connection.host: "localhost"
+  spark.cassandra.connection.port: "9042"
+  spark.sql.extensions: "com.datastax.spark.connector.CassandraSparkExtensions"
+
+web_host: 127.0.0.1
+web_port: 9001

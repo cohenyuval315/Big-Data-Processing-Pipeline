@@ -1,0 +1,1 @@
+/usr/local/spark/spark/sbin/start-master.sh

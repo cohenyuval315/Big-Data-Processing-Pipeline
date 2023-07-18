@@ -31,7 +31,6 @@ class CassandraService:
  
     def create_table_if_not_exists(self,table):
         session = self.get_session()
-        # drop_table = f"DROP TABLE IF EXISTS {self.keyspace}.{table}"
         drop_table = f"TRUNCATE {self.keyspace}.{table}"
         session.execute(drop_table)
 

@@ -13,10 +13,21 @@ class SiteHandler:
     def cassandra(self):
         return self._cassandra
 
-    async def history_data(self, request):
-        candlesticks = 
-        return web.Response()
+    async def data(self, request):
+        # starttime = request.match_info['starttime']
+        # endtime = request.match_info['endttime']
+        # interval = request.match_info['interval']
+        data= {
+            "history":[]
+        }
+        return web.json_response(data=data)
         
 
     async def new_data(self, request):
-        username = request.match_info['username']
+        # timestamp = request.match_info['last_timestamp']
+        data= {
+            "new_data":[]
+        }
+        return web.json_response(data=data)
+
+
