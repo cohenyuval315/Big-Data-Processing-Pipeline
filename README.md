@@ -1,4 +1,7 @@
 # Price-Prediction-Pipeline
+- disclaimer:
+this project main purpose is the pipeline.
+therefor the algorithms and models used for the bitcoin predictions are not recommended , for many complex reasons.
 # Currently Working On
 
 Price prediction project using machine learning big data pipeline.  
