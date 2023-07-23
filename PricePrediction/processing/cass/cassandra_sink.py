@@ -12,8 +12,9 @@ class CassandraSink(CassandraService):
 
     def write_stream(self,df,table,keyspace="btcusdt"):
         df.writeStream \
-            .trigger(processingTime="5 seconds") \
+            .option("checkpointLocation", "checkpoints/") \
             .foreachBatch(lambda df, epoch_id: self.write_to_cassandra(df, epoch_id, keyspace, table)) \
+            .trigger(processingTime="5 seconds") \
             .outputMode("update") \
             .start()
 

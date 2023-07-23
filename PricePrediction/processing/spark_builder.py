@@ -21,6 +21,8 @@ spark_local_dir = r'D:\spark\temp'
 spark_lib = f'{apache_spark}:spark-sql-kafka-0-10_{SCALA_VERSION}:{SPARK_VERISON}'
 cassandra = f'{apache_cassandra}:apache-cassandra:{CASSANDRA_VERSION}'
 spark_cassandra_connector =f'com.datastax.spark:spark-cassandra-connector_{SCALA_VERSION}:3.3.0'
+
+
 packages = f'--packages {spark_lib},{cassandra},{spark_cassandra_connector} pyspark-shell'
 
 bin_path = os.path.join(hadoop_home, 'bin')

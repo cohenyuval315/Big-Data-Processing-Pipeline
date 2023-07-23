@@ -1,0 +1,8 @@
+FROM cassandra:lastest
+COPY cassandra_cluster/config/ /etc/cassandra/
+COPY cassandra_cluster/scripts/ /var/lib/cassandra/scripts
+COPY cassandra_cluster/startup.sh /startup.sh
+RUN chmod +x /startup.sh
+CMD ["cassandra","-f"]   
+
+

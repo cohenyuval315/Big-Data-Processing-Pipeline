@@ -1,5 +1,9 @@
 import yaml
 import os
+import json
+import numpy as np
+from keras.models import model_from_json
+
 
 def read_yaml(path):
     with open(path, "r") as stream:
@@ -8,7 +12,6 @@ def read_yaml(path):
         except yaml.YAMLError as exc:
             print(exc)
    
-
 
 def read_config(path,config_key):
     if not os.path.exists(path):
@@ -21,3 +24,23 @@ def read_config(path,config_key):
         print(e)
 
 
+def save_model(model_path, weights_path, model):
+    """
+    Save model.
+    """
+    np.save(weights_path, model.get_weights())
+    with open(model_path, 'w') as f:
+        json.dump(model.to_json(), f)
+    
+def load_model(model_path, weights_path):
+    """
+    Load model.
+    """
+    with open(model_path, 'r') as f:
+        data = json.load(f)
+
+    model = model_from_json(data)
+    weights = np.load(weights_path)
+    model.set_weights(weights)
+
+    return model

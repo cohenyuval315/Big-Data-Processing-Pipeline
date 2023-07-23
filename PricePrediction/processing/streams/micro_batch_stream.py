@@ -1,2 +1,0 @@
-class MicroBatch():
-    pass

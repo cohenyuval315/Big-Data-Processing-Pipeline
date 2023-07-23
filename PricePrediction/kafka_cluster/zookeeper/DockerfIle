@@ -1,0 +1,3 @@
+FROM bitnami/zookeeper:latest
+
+COPY zookeeper/config/zookeeper.properties /opt/bitnami/zookeeper/conf/zoo.cfg
