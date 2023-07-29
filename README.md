@@ -1,29 +1,98 @@
 # Price-Prediction-Pipeline
-- disclaimer:
-this project main purpose is the pipeline.
-therefor the algorithms and models used for the bitcoin predictions are not recommended , for many complex reasons.
-# Currently Working On
+## disclaimer this project is onhold
+this is big data project trying to predict btcusdt(BITCOIN - USD) price using
+kafka, spark, cassandra, hadoop.
 
-Price prediction project using machine learning big data pipeline.  
-started: 15.7.2023  
+## main flow:
+1. 
+- from api to kafka: real time data , history data
+2. 
+- from kafka to hadoop: history data 
+- from kafka to hadoop: real time data 
+3. 
+- from kafka to kafka: transformation to data(currently transformations in spark)
+4. 
+- from kafka to cassandra: transformed real time data 
+- from kafka to spark: real time data : processing predictions.[x]
+- from hadoop to spark : history data
+- from spark to kafka: predictions
+5. 
+- from kafka to cassnadra: predictions 
+6. 
+- from cassandra to web server by request 
+- from web server to web client: visulizing data
+7. periodic:
+    1. 
+    - from cassandra to hadoop: old real time data 
+    - from cassnadra to delete: old real time data
+    - from cassandra to hadoop: old predictions data
+    - from cassnadra to delete: old predictions data
+    - from cassnadra to hadoop: aggregation data analytics
+    - from cassnadra to delete: aggregation data analytics
+    2. 
+    - from spark to hadoop: ml processing historical data
+    - from spark to hadoop: historical aggregation data analytics
 
-# Finished Tasks
-- binance data source for bitcoin data
-- pyspark structured streaming infrastracture.
-- docker cassandra distributed nosql database. 
-- spark to cassandra for raw data
-- data source to kafka
-- kafka to spark
 
-# Next 
-- Kafka to cassandra for raw data
-- spark to cassandra for processed data
-- testing diffrent models with training , and predictions
-- react for charts visualisation with rest api
-- Astra DB
-- databricks distributed deep learning on spark
-- dockerize kafka
-- docker-compose
-- performance configurations optimiziations
+# General:
+- docker-compose []
+- organizing clusters configurations []
+- k8 []
+
+# Data:
+- open-low-high-close candlesticks
+
+
+# Data Source:
+- using binance python lib: depth 2 order book
+- using binance python lib: all binance btcusdt history, files/kafka[x]
+- using binance python lib: real time streaming binance btcusdt data 1m intervals[x]
+
+# data ingestion
+- history/real time data of btcusdt to kafka[x]
+
+# Data etl:
+- kafka streams scala , transform data to kafka[] 
+- real time data to hadoop []
+- history data to hadoop []
+
+# data retention:
+- scala - remove real time from cassandra every interval[]
+- scala - remove real time from cassandra every interval[]
+- scala - aggregated data to hadoop every interval[]
+
+# spark structred processing
+- pyspark processing[x]
+- machine learning example sklearn  SGBRegressor model[x]
+- randomForestRegressor(1d) + lstm(1m)
+- testing models[]
+- decoupling cassandra []
+- predictions back to kafka instead of cassandra []
+- docker []
+- ...
+
+
+# cassandraDB
+- real time data to cassandra[x]
+- predictions data to cassandra[x]
+- scripts[]
+- docker[x]
+
+# hadoop(warehouse and datalake)
+- aggregated data []
+- btcusdt history data []
+- predictions data []
+- docker []
+
+
+# web server:
+- server aiohttp [x]
+- endpoints [x]
+- connection to cassandra[x]
+- docker []
+
+# web application:
+- react with charts []
+- docker []
 
 

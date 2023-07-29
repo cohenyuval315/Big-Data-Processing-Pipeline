@@ -6,7 +6,7 @@ from utils import read_yaml,read_config
 
 findspark.init()
 
-CONFIG_PATH = "./../config.yml"
+CONFIG_PATH = "./config.yaml"
 apache_spark = "org.apache.spark"
 apache_cassandra = "org.apache.cassandra"
 CASSANDRA_VERSION = '3.11.5'

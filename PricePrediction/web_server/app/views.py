@@ -13,21 +13,30 @@ class SiteHandler:
     def cassandra(self):
         return self._cassandra
 
-    async def data(self, request):
-        # starttime = request.match_info['starttime']
-        # endtime = request.match_info['endttime']
-        # interval = request.match_info['interval']
-        data= {
-            "history":[]
-        }
+    async def history_data(self,request):
+        data = request.app['db'].get_all_data()
+        if not data:
+            return web.json_response(status=404)
         return web.json_response(data=data)
-        
-
-    async def new_data(self, request):
-        # timestamp = request.match_info['last_timestamp']
-        data= {
-            "new_data":[]
-        }
+    
+    async def history_predictions(self,request):
+        data = request.app['db'].get_all_predictions()
+        if not data:
+            return web.json_response(status=404)
+        return web.json_response(data=data)
+    
+    async def data(self, request):
+        last_timestamp = request.query.get('last_timestamp')
+        data = request.app['db'].get_data(int(last_timestamp))
+        if not data:
+            return web.json_response(status=404)
+        return web.json_response(data=data)
+    
+    async def predictions(self,request):
+        last_timestamp = request.query.get('last_timestamp')
+        data = request.app['db'].get_predications(int(last_timestamp))
+        if not data:
+            return web.json_response(status=404)
         return web.json_response(data=data)
 
 

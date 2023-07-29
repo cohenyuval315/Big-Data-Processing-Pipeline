@@ -4,7 +4,8 @@ import pytz
 import yaml
 from aiohttp import web
 from dateutil.parser import parse
-from db import CassandraService
+from db import CassandraDB
+from config import Config
 
 
 def load_config(fname):
@@ -14,16 +15,9 @@ def load_config(fname):
     return data
 
 
-async def init_cassandra(conf):
-    cassandra_config = conf['cassandra'] 
-    hosts = cassandra_config['hosts']
-    port = cassandra_config['port']
-    keyspaces = cassandra_config['keyspaces']
-    tables = cassandra_config['tables']
-    cs = CassandraService(addresses=hosts,port=port)
-    for keyspace in keyspaces:
-        cs.create_keyspace_if_not_exists(keyspace)
-        for table in tables:
-            cs.create_table_if_not_exists(keyspace,table)
+def init_cassandra(conf:Config):
+    cs = CassandraDB(addresses=conf.CASSANDRA_HOSTS,port=conf.CASSANDRA_PORT)
+    cs.create_keyspace_if_not_exists()
+    cs.create_table_if_not_exists(truncate=conf.TRUNCATE_TABLE,drop=conf.DROP_TABLE)
     return cs
 

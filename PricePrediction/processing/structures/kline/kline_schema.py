@@ -1,6 +1,9 @@
-from pyspark.sql.types import LongType,StringType,DoubleType,IntegerType,BooleanType,StructType,StructField
+from pyspark.sql.types import LongType,StringType,DoubleType,IntegerType,BooleanType,StructType,StructField,DateType,TimestampType
 
 klineSchema = StructType([\
+    StructField("klineStartTimeDate", TimestampType(),True),
+    StructField("klineCloseTimeDate", TimestampType(),True),
+    StructField("eventTimeDate", TimestampType(),True),
     StructField("klineStartTime", LongType(),True),
     StructField("klineCloseTime", LongType(),True),
     StructField("symbol", StringType(),True),

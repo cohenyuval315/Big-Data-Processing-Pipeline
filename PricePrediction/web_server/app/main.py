@@ -3,33 +3,21 @@ import logging
 import pathlib
 from aiohttp import web
 from routes import setup_routes
-# from utils import init_cassandra, load_config
+from utils import init_cassandra
 from views import SiteHandler
-import os
+from config import app_config
 
 
 PROJ_ROOT = pathlib.Path(__file__).parent.parent
-
-# async def setup_cassandra(app, conf, loop):
-#     cassandra = await init_cassandra(conf)
-#     return cassandra
-
-
-
+# conf = load_config(PROJ_ROOT / 'config.yml')
 
 async def init(loop):
-    # conf = load_config(PROJ_ROOT / 'config.yml')
     app = web.Application()
-    # cassandra = await setup_cassandra(app, conf, loop)
-    handler = SiteHandler()
+    cassandra = init_cassandra(conf=app_config)
+    handler = SiteHandler(cassandra)
+    app['db'] = cassandra
     setup_routes(app, handler, PROJ_ROOT)
-    host = os.environ.get("WEB_HOST")
-    port = os.environ.get("WEB_PORT")
-    db_host = os.environ.get("DB_HOSTS")
-    db_ports = os.environ.get("DB_PORT")
-    print(db_host,db_ports)
-    # host, port = conf['host'], conf['port']
-    return app, host, port
+    return app, app_config.WEB_HOST, app_config.WEB_PORT
 
 
 async def get_app():

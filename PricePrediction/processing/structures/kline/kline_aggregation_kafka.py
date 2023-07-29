@@ -8,4 +8,5 @@ class KlineAggregationKafka:
     partition: int
     offset: int
     timestamp: pd.Timestamp
+    key: str
     klineOutput: KlineData

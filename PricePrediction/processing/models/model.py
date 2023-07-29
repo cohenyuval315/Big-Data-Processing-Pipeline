@@ -1,6 +1,12 @@
 import tensorflow as tf
 import numpy as np
 import json
+import pickle
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.linear_model import SGDRegressor
+from sklearn.preprocessing import StandardScaler
+from .utils import save_sklearn_model,load_sklearn_model
+import os
 
 def build_and_compile_lstm_model(seq_length):
     model = tf.keras.Sequential()
@@ -17,15 +23,10 @@ def build_and_compile_lstm_model(seq_length):
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
 
-def save_model(model_path, weights_path, model):
-    np.save(weights_path, model.get_weights())
-    with open(model_path, 'w') as f:
-        json.dump(model.to_json(), f)
-    
-def load_model(model_path, weights_path):
-    with open(model_path, 'r') as f:
-        data = json.load(f)
-    model = tf.keras.models.model_from_json(data)
-    weights = np.load(weights_path)
-    model.set_weights(weights)
-    return model
+
+def sgd_regressor(model_path):
+    if os.path.exists(model_path):
+        sgdr = load_sklearn_model(model_path)
+    else:
+        sgdr = SGDRegressor()
+    return sgdr

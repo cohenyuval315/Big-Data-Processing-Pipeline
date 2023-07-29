@@ -44,3 +44,5 @@ def load_model(model_path, weights_path):
     model.set_weights(weights)
 
     return model
+
+
