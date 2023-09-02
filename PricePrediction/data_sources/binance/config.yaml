@@ -22,7 +22,7 @@ data_sources:
       to_csv: false
       sleep_delay: 0.1
       print: false
-      to_kafka: true
+      to_kafka: false
       timestamp_partitioner: false
       timestamp_partitioner_seperator: '|'
       default_topic: "raw_historical_data"

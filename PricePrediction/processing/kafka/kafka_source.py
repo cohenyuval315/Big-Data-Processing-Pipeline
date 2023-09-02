@@ -10,12 +10,12 @@ class KafkaSource(KafkaService):
         self.boostrap_servers = "localhost:9092"
         self.default_topic = "raw_data_test"
 
-    def read(self,spark,topics:str="raw_data"):
+    def read(self,spark,topics:list=["raw_data"]):
         df = spark \
         .readStream \
         .format("kafka") \
         .option("kafka.bootstrap.servers", "localhost:9092") \
-        .option("subscribe", topics) \
+        .option("subscribe", ",".join(topics)) \
         .option("startingOffsets", "earliest") \
         .option("failOnDataLoss","false") \
         .load()
@@ -37,4 +37,19 @@ class KafkaSource(KafkaService):
             "kline_data",
         )
         return ready_kafka_df
-
+    
+    def debug(self,spark,topics:list=["raw_data"]):
+        df = spark \
+            .readStream \
+            .format("kafka") \
+            .option("kafka.bootstrap.servers", "localhost:9092") \
+            .option("subscribe", ",".join(topics)) \
+            .option("startingOffsets", "earliest") \
+            .option("failOnDataLoss","false") \
+            .load()
+        df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)") \
+            .writeStream \
+            .format("console") \
+            .outputMode("append") \
+            .start()
+        return df

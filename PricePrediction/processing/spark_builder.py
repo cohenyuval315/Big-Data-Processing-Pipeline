@@ -1,10 +1,12 @@
 from pyspark.sql import SparkSession
-from pyspark import SparkConf
+from pyspark import SparkConf,SparkContext
 import findspark
 import os
 from utils import read_yaml,read_config
 
 findspark.init()
+
+spark_master_url = "spark://127.0.0.1:7078"
 
 CONFIG_PATH = "./config.yaml"
 apache_spark = "org.apache.spark"
@@ -43,9 +45,13 @@ configurations = read_config(CONFIG_PATH,"sparkConfig")
 conf.setAll(configurations)
 
 spark = SparkSession.builder \
+    .master(spark_master_url)\
     .appName("app") \
     .config(conf=conf)\
     .getOrCreate()
+
+spark.sparkContext.setLogLevel("INFO")
+
 
 # spark = SparkSession.builder \
 #     .appName("app") \

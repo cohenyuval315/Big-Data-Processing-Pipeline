@@ -1,2 +1,0 @@
-/usr/local/kafka/kafka/bin/kafka-topics.sh --create --topic my_topic --bootstrap-server localhost:9092
-/usr/local/kafka/kafka/bin/kafka-topics.sh --create --topic output-topic --bootstrap-server localhost:9092

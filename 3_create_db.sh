@@ -1,0 +1,1 @@
+docker exec -it cassandra bash -c "bash /var/lib/cassandra/scripts/create_db.sh"

@@ -41,7 +41,8 @@ class CassandraService:
                 predictedcloseprice DOUBLE,
                 timestamp BIGINT,
                 PRIMARY KEY (timestamp,opentimestamp)
-            ) WITH CLUSTERING ORDER BY (opentimestamp DESC);
+            ) WITH CLUSTERING ORDER BY (opentimestamp DESC)
+            USING TTL 3600;
         """
         self._create_table_if_not_exists(table_name,table_schema,drop,truncate)
 

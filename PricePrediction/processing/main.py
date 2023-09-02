@@ -39,6 +39,7 @@ def model_predict(model,vector_col):
     output = model.value.predict(vector_col)
     return output
 
+
 def predict_and_write_cassandra(spark,batch_df,batch_id,model,feature_cols,input_features_col,target_col,metadata_cols,keyspace="app_data",table="predictions"):
     predict_udf = F.udf(lambda vector_col: model_predict(model, vector_col), DoubleType())
     batch_with_prediction_df = batch_df.withColumn("predictedcloseprice", predict_udf(F.col(input_features_col)))

@@ -3,12 +3,17 @@ import os
 from binance import ThreadedWebsocketManager,BinanceSocketManager,AsyncClient
 import json
 import time
-from kafka import MyProducer
+from producer import MyProducer
 import asyncio
-import pandas as pd
 from confluent_kafka.admin import AdminClient, NewTopic
-from utils import load_config
+import yaml
 
+def load_config(config_path):
+    with open(config_path, 'r') as config_file:
+        config = yaml.safe_load(config_file)
+        return config
+    
+    
 async def normalize_kline(msg):
     m = msg['data'].copy()
     normal_msg = m['k'].copy()
@@ -61,13 +66,30 @@ def get_topic_kline_stream(msg,default_topic,closed_topic):
         return default_topic
     return topic
 
-def create_kafka_topic(topic_name):
+async def create_kafka_topics(topics_names:list=[],bootstrap_server="localhost:9092"):
+    
+
     admin_client = AdminClient({
-        "bootstrap.servers": "localhost:9092"
+        "bootstrap.servers": f"{bootstrap_server}"
     })
-    topic_list = []
-    topic_list.append(NewTopic(topic_name, 1, 1))
-    admin_client.create_topics(topic_list)
+    existing_topics = admin_client.list_topics().topics
+    to_create_topics = []
+    for topic in topics_names:
+        if topic in existing_topics:
+            print(f"Topic '{topic}' already exists, skipping creation.")
+        else:
+            new_topic = NewTopic(topic, num_partitions=1, replication_factor=1)
+            to_create_topics.append(new_topic)
+            print("added topic to create: ",topic)
+    if len(to_create_topics) > 0:
+        futures = admin_client.create_topics(to_create_topics)
+        print("creating topics: ",futures)
+        for topic, future in futures.items():
+            try:
+                future.result()  
+                print(f"Topic '{topic}' created successfully.")
+            except Exception as e:
+                print(f"Failed to create topic '{topic}': {e}")
 
 def get_kline_key(msg):
     return None
@@ -111,37 +133,37 @@ async def run_stream(bsm,streams,**kwargs):
             
     
 
-async def binance_socket_stream_data_source(config,producer=None):
+async def binance_socket_stream_data_source(config,producer=None,bootstrap_servers="localhost:9092"):
     binance_api = config['binance_api']
     binance_api = binance_api['real_time_stream']
     RUN = bool(binance_api['run'])
     if RUN is False:
         return
-    
     API_KEY = os.environ.get('BINANCE_API_KEY')
     SECRET_KEY = os.environ.get('BINANCE_SECRET_KEY')
-
     STREAMS = binance_api['streams']
     STOP_ON_EXCEPTION = bool(binance_api['stop_on_exception'])
     DEFAULT_TOPIC = binance_api['default_topic']
-    create_kafka_topic(DEFAULT_TOPIC)
     USER_TIMEOUT = bool(binance_api['to_timeout'])
     user_timeout = None
     if USER_TIMEOUT is True:
         user_timeout = int(binance_api['timeout'])
-    #create_kafka_topic(DEFAULT_TOPIC)
     TO_PRINT= bool(binance_api['print'])
     SANITY_CHECK = bool(binance_api['sanity_check'])
     CLOSED_TOPIC = str(binance_api['closed_topic'])
     TO_KAFKA = binance_api['to_kafka']
     BINANCE_SLEEP_DELAY = int(binance_api['sleep_delay'])
     KEY = None
+    
+    await create_kafka_topics([DEFAULT_TOPIC,CLOSED_TOPIC],bootstrap_servers)
+
     async_client = await AsyncClient.create(api_key=API_KEY,api_secret=SECRET_KEY)
     bsm = BinanceSocketManager(async_client,user_timeout=user_timeout)
     my_producer = producer if TO_KAFKA is True else None
 
     start_time = time.time()
     tries = 0
+
     while True:
         try:
             print(f"starting binance socket streams:{STREAMS}")
@@ -177,14 +199,16 @@ async def binance_socket_stream_data_source(config,producer=None):
     await async_client.close_connection()
 
 
-async def run_sources(config,producer=None):
+
+async def run_sources(config,producer=None,bootstrap_servers=None):
     await asyncio.gather(*[
-        binance_socket_stream_data_source(config,producer)
+        binance_socket_stream_data_source(config,producer,bootstrap_servers)
                            ])
 
 
 async def run():
-    CONFIG_FILE_PATH = 'data_ingestion_config.yaml'
+    CONFIG_FILE_PATH = '/usr/src/sources_1/binance/config.yaml'
+    CONFIG_FILE_PATH = './config.yaml'
     config = load_config(CONFIG_FILE_PATH)
     kafka_config = config['kafka']
     producer_config = kafka_config['producer_config']
@@ -194,7 +218,9 @@ async def run():
     producer = MyProducer(bootstrap_servers=BOOTSTRAP_SERVERS,config=None)
     if TO_KAFKA is False:
         producer = None
-    await run_sources(data_sources_config,producer)
+
+
+    await run_sources(data_sources_config,producer,BOOTSTRAP_SERVERS)
 
 def main():
     asyncio.run(run())

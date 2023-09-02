@@ -1,8 +1,11 @@
-FROM cassandra:lastest
-COPY cassandra_cluster/config/ /etc/cassandra/
-COPY cassandra_cluster/scripts/ /var/lib/cassandra/scripts
-COPY cassandra_cluster/startup.sh /startup.sh
-RUN chmod +x /startup.sh
-CMD ["cassandra","-f"]   
+FROM cassandra:latest
+COPY config/ /etc/cassandra/
+COPY scripts/ /var/lib/cassandra/scripts
 
+RUN chmod +x /var/lib/cassandra/scripts/app_data.cql
+RUN chmod +x /var/lib/cassandra/scripts/moving_avg.cql
+RUN chmod +x /var/lib/cassandra/scripts/create_db.sh
+
+EXPOSE 7000 7199 9042
+CMD ["cassandra", "-f"]
 
