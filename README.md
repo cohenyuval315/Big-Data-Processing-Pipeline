@@ -1,7 +1,5 @@
 # Price-Prediction-Pipeline
-## disclaimer this project is onhold
-this is big data project trying to predict btcusdt(BITCOIN - USD) price using
-kafka, spark, cassandra, hadoop.
+
 
 ## main flow:
 1. 
